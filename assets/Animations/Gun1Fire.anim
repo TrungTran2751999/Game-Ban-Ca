@@ -1,0 +1,65 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "Gun1Fire",
+  "_objFlags": 0,
+  "_native": "",
+  "_duration": 0.15,
+  "sample": 60,
+  "speed": 1,
+  "wrapMode": 1,
+  "curveData": {
+    "comps": {
+      "cc.Sprite": {
+        "spriteFrame": [
+          {
+            "frame": 0,
+            "value": {
+              "__uuid__": "9af0ac10-3d5f-4d16-a60b-9bec9a7c60ca@6c48a"
+            }
+          },
+          {
+            "frame": 0.03333333333333333,
+            "value": {
+              "__uuid__": "886aed48-abb4-41fc-b85e-b8340a995d01@6c48a"
+            }
+          },
+          {
+            "frame": 0.06666666666666667,
+            "value": {
+              "__uuid__": "9bb7ab05-235c-43a8-859b-808ad98eeb5c@6c48a"
+            }
+          },
+          {
+            "frame": 0.1,
+            "value": {
+              "__uuid__": "9b336423-a2bc-45b2-a33c-ef11f552eece@6c48a"
+            }
+          },
+          {
+            "frame": 0.13333333333333333,
+            "value": {
+              "__uuid__": "877b9d86-e30a-4324-b20c-855d4d682c98"
+            }
+          }
+        ]
+      }
+    },
+    "props": {
+      "x": [
+        {
+          "frame": 0,
+          "value": -11.827
+        },
+        {
+          "frame": 0.06666666666666667,
+          "value": -20.948
+        },
+        {
+          "frame": 0.13333333333333333,
+          "value": -10.003
+        }
+      ]
+    }
+  },
+  "events": []
+}
