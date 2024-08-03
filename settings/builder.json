@@ -1,7 +1,7 @@
 {
-  "title": "GameBanCa2.3.3",
+  "title": "GameBanCaBuild",
   "packageName": "org.cocos2d.demo",
-  "startScene": "",
+  "startScene": "126e898c-14b3-40a9-93d0-dbeb1e003d08",
   "excludeScenes": [],
   "includeSDKBox": false,
   "orientation": {

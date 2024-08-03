@@ -19,11 +19,18 @@ export default class Bullet1 extends cc.Component {
     protected update(dt: number): void {
         this.node.y+=this.speed*dt
         this.node.setPosition(new cc.Vec2(this.node.x, this.node.y))
-        
         if(this.node.position.y > Math.abs(this.yFrame)*1.5 || this.node.x > Math.abs(this.xFrame)*1.5){
             this.node.parent.destroy()
-            console.log(this.node.position.y)
-            console.log(this.node.position.x)
         }   
+    }
+    onCollisionEnter(other:cc.Collider, self:cc.Collider){
+        //ban trung ca
+        if(other.tag==1){
+            const anim = this.node.getComponent(cc.Animation)
+            this.speed=0;
+            this.scheduleOnce(() => {
+                this.node.destroy();
+            }, anim.play("Explosion").duration);
+        }
     }
 }
