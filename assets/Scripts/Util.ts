@@ -18,4 +18,16 @@ export default class Util extends cc.Component {
         let distance = pos2.sub(pos1).mag();
         return distance/speed;
     }
+    public static hieuUngChetXoayVong(obj:cc.Node, time:number){
+        let actionDie = cc.spawn(
+            cc.rotateTo(time, 360*5),
+            cc.scaleTo(1,0,0)
+        )
+        obj.runAction(actionDie)
+    }
+    public static quyDoiGocTaoDoCha(nodeCanDoi:cc.Node, nodeCha:cc.Node):cc.Vec2{
+        let vitriHientai = nodeCanDoi.convertToWorldSpaceAR(cc.Vec2.ZERO)
+        let viTriCanDen = nodeCha.convertToNodeSpaceAR(vitriHientai)
+        return viTriCanDen;
+    }
 }

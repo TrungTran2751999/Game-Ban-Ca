@@ -34,6 +34,7 @@ export default class Gun1 extends cc.Component {
         const anim = this.node.getComponent(cc.Animation)
         anim.play("Gun1Fire")
         let instanceBullet = cc.instantiate(this.bullet)
+        instanceBullet.name = "Bullet|GunStation1"
         let gunAngle = this.node.angle
         let cloneGocBan = cc.instantiate(this.gocBan);
         

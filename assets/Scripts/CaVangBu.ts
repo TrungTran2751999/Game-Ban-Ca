@@ -8,8 +8,11 @@
 import Bullet from "./Bullet";
 import Bullet1 from "./Bullet1";
 import GameCtrl from "./GameCtrl";
+import GlobalVariable from "./GlobalVariable";
 import ListViTriCaDiChuyen from "./ListViTriCaDiChuyen";
+import ThongTinNguoiChoi from "./ThongTinNguoiChoi";
 import Util from "./Util";
+import XuBac from "./XuBac";
 
 const {ccclass, property} = cc._decorator;
 
@@ -21,10 +24,16 @@ export default class CaVangBu extends cc.Component {
     public heath:number = 5
     @property(ListViTriCaDiChuyen)
     public listViTri:ListViTriCaDiChuyen;
+    @property(cc.Node)
+    public xuBac:cc.Node;
+    @property
+    public soDiem:number = 0;
 
     public count:number = 0
     public init = true;
     public viTris:cc.Node[];
+    public anim:cc.Animation;
+    public collider:cc.Collider;
     
     protected onLoad(): void {
         this.viTris = this.listViTri.setViTriForObj();
@@ -39,7 +48,10 @@ export default class CaVangBu extends cc.Component {
                 toTalTime += timeMode;
             }
         }
-        
+        this.collider = this.node.getComponent(cc.Collider)
+        this.anim = this.node.getComponent(cc.Animation)
+        this.anim.play("CaVangBu")
+        this.anim.on("finished", ()=>{this.anim.play("CaVangBu")}, this)
         this.scheduleOnce(()=>{
             this.diChuyen()
         }, 0)
@@ -50,16 +62,6 @@ export default class CaVangBu extends cc.Component {
             }, toTalTime, 1000, 0)
         }, timeStart)
         
-    }
-    protected update(dt: number): void {
-        if(this.count==80){
-            const anim = this.node.getComponent(cc.Animation)
-            anim.play("CaVangBu")
-            this.count=0
-        }
-        //this.node.x+=this.speed
-        
-        this.count++;
     }
     diChuyen(){
        let listFiteTimeAct = [];
@@ -97,18 +99,48 @@ export default class CaVangBu extends cc.Component {
         this.node.runAction(action)
        
     }
-    die(){
+    die(nguoiChoi:cc.Node){
         if(this.heath==0){
-            this.node.destroy()
+            this.anim.pause()
+            this.collider.destroy()
+            let containerCanvas = cc.find("Canvas")
+            let xuBacClass:XuBac = this.xuBac.getComponent("XuBac")
+            if(xuBacClass!=null){
+                this.xuBac.setParent(this.node);
+                let viTriXuBac = Util.quyDoiGocTaoDoCha(this.xuBac, containerCanvas);
+                this.xuBac.setParent(containerCanvas)
+                this.xuBac.setPosition(new cc.Vec2(viTriXuBac.x, viTriXuBac.y))
+                //lay vi tri cua label so xu
+                let thongTinNguoiChoi:ThongTinNguoiChoi = nguoiChoi.getComponent("ThongTinNguoiChoi")
+                let labelSoXu = thongTinNguoiChoi.SoXuBac
+                xuBacClass.targetNode = labelSoXu
+                xuBacClass.animateTarget(this.soDiem)
+            }
+            Util.hieuUngChetXoayVong(this.node, 1)
+            this.scheduleOnce(()=>{
+                this.node.destroy()
+                let listViTri = this.node.parent.children
+                for(let i=0; i<listViTri.length; i++){
+                    if(listViTri[i].getComponent("CaVangBu")==null){
+                        listViTri[i].destroy()
+                    }
+                }
+            },1)
         }
     }
     onCollisionEnter(other:cc.Collider, self:cc.Collider){
         //ca bi dan ban trung
         let bulletOther:Bullet = other.node.getComponent("Bullet")
+        let tenNguoiBan = bulletOther.node.name.split("|")[1]
+        let nguoiBan:cc.Node;
+        //lay node nguoi ban
+        if(tenNguoiBan!=undefined){
+            nguoiBan = cc.find(`${GlobalVariable.rootNguoiBan}/${tenNguoiBan}`)
+        }
         if(other.tag==0){
             this.node.color = cc.Color.RED;
             this.heath-=bulletOther.damage
-            this.die();
+            this.die(nguoiBan);
             this.scheduleOnce(()=>{
                 this.node.color = cc.Color.WHITE
             },0.1)
