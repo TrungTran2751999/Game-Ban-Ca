@@ -5,7 +5,11 @@
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
+import Bullet from "./Bullet";
+import GameCtrl from "./GameCtrl";
+import GlobalVariable from "./GlobalVariable";
 import ListViTriCaDiChuyen from "./ListViTriCaDiChuyen";
+import ListViTriKhoiTao from "./ListViTriKhoiTao";
 import ThongTinNguoiChoi from "./ThongTinNguoiChoi";
 import XuBac from "./XuBac";
 
@@ -35,12 +39,16 @@ export default class Util extends cc.Component{
         return viTriCanDen;
     }
     public static initCa(ca:cc.Node, nameScriptCa:string, listViTri:ListViTriCaDiChuyen, xuBac:cc.Node, fishes:cc.Node){
-        let insCa = cc.instantiate(ca)
-        let insCaClass = insCa.getComponent(nameScriptCa)
-        insCaClass.listViTri = listViTri
-        insCaClass.xuBac = xuBac
-        insCa.setPosition(cc.Vec2.ZERO)
-        fishes.addChild(insCa)
+        let nodeViTriKhoiTao = GameCtrl.getInstance().initXuBac()
+        console.log(nodeViTriKhoiTao)
+
+        // let vec2KhoiTao = nodeViTriKhoiTao.setViTriForObj();
+        // let insCa = cc.instantiate(ca)
+        // let insCaClass = insCa.getComponent(nameScriptCa)
+        // insCaClass.listViTri = listViTri
+        // insCaClass.xuBac = xuBac
+        // insCa.setPosition(vec2KhoiTao)
+        // fishes.addChild(insCa)
     }
     public static caDiChuyen(ca:cc.Node, viTris:cc.Vec2[], isInit:boolean, speed:number){
         let listFiteTimeAct = [];
@@ -131,5 +139,14 @@ export default class Util extends cc.Component{
                 //this.diChuyen()
             }, toTalTime, 1000, 0)
         }, timeStart)
+    }
+    public static getTenNguoiBan(bulletOther:Bullet):cc.Node{
+        let tenNguoiBan = bulletOther.node.name.split("|")[1]
+        let nguoiBan:cc.Node;
+        //lay node nguoi ban
+        if(tenNguoiBan!=undefined){
+            nguoiBan = cc.find(`${GlobalVariable.rootNguoiBan}/${tenNguoiBan}`)
+        }
+        return nguoiBan;
     }
 }

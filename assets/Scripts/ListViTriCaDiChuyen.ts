@@ -15,7 +15,7 @@ export default class ListViTriCaDiChuyen extends cc.Component {
     public rootNode:cc.Node
     
     public randomViTri():cc.Node{
-        let lengthListViTri = this.listViTri.children.length-1;
+        let lengthListViTri = this.listViTri.children.length;
         let rdNode = Math.floor(Math.random()*lengthListViTri);
         return this.listViTri.children[rdNode];
     }

@@ -11,7 +11,6 @@ import GameCtrl from "./GameCtrl";
 import GlobalVariable from "./GlobalVariable";
 import ListViTriCaDiChuyen from "./ListViTriCaDiChuyen";
 import ThongTinNguoiChoi from "./ThongTinNguoiChoi";
-import Util from "./Util";
 import XuBac from "./XuBac";
 
 const {ccclass, property} = cc._decorator;
@@ -39,26 +38,22 @@ export default class CaVangBu extends cc.Component {
         this.anim = this.node.getComponent(cc.Animation)
         this.anim.play("CaVangBu")
         this.anim.on("finished", ()=>{this.anim.play("CaVangBu")}, this)
-        new Util().datLichtrinhDiChuyen(this.node, this.viTris, this.speed)
+        GameCtrl.getInstance().datLichtrinhDiChuyen(this.node, this.viTris, this.speed)
         
     }
     onCollisionEnter(other:cc.Collider, self:cc.Collider){
         //ca bi dan ban trung
         let bulletOther:Bullet = other.node.getComponent("Bullet")
-        let tenNguoiBan = bulletOther.node.name.split("|")[1]
-        let nguoiBan:cc.Node;
-        //lay node nguoi ban
-        if(tenNguoiBan!=undefined){
-            nguoiBan = cc.find(`${GlobalVariable.rootNguoiBan}/${tenNguoiBan}`)
-        }
+        let nguoiBan = GameCtrl.getTenNguoiBan(bulletOther);
         if(other.tag==0){
             this.node.color = cc.Color.RED;
             this.heath-=bulletOther.damage
             //this.die(nguoiBan);
-           new Util().die(this.node, this.heath, this.anim, this.xuBac, this.collider, nguoiBan, this.soDiem)
+            GameCtrl.getInstance().die(this.node, this.heath, this.anim, this.xuBac, this.collider, nguoiBan, this.soDiem)
             this.scheduleOnce(()=>{
                 this.node.color = cc.Color.WHITE
             },0.1)
         }
+
     }
 }
