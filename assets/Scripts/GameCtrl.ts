@@ -9,6 +9,8 @@ import Bullet1 from "./Bullet1";
 import CaVangBu from "./CaVangBu";
 import Gun1 from "./Gun1";
 import ListViTriCaDiChuyen from "./ListViTriCaDiChuyen";
+import Sua from "./Sua";
+import Util from "./Util";
 import XuBac from "./XuBac";
 
 const {ccclass, property} = cc._decorator;
@@ -25,13 +27,18 @@ export default class GameCtrl extends cc.Component {
     @property(cc.Prefab)
     public caVangBu:cc.Node
     @property(cc.Prefab)
+    public sua:cc.Node
+    @property(cc.Prefab)
     public xuBac:cc.Node
     
     protected onLoad(): void {
         let managerCollision = cc.director.getCollisionManager();
         managerCollision.enabled = true;
         this.initListener()
-        this.initCaVangBu()
+        //init ca vang bu
+        Util.initCa(this.caVangBu, "CaVangBu", this.listViTri, this.initXuBac(), this.fishes)
+        //init Sua
+        Util.initCa(this.sua, "Sua", this.listViTri, this.initXuBac(), this.fishes)
     }
     initListener(){
         this.gun1.initListener()
@@ -43,6 +50,9 @@ export default class GameCtrl extends cc.Component {
         caVangBuClass.xuBac = this.initXuBac()
         insCaVangBu.setPosition(cc.Vec2.ZERO)
         this.fishes.addChild(insCaVangBu)
+    }
+    public initSua(){
+        
     }
     initXuBac():cc.Node{
         let insXuBac = cc.instantiate(this.xuBac)

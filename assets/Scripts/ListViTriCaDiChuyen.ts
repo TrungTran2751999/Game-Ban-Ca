@@ -19,7 +19,7 @@ export default class ListViTriCaDiChuyen extends cc.Component {
         let rdNode = Math.floor(Math.random()*lengthListViTri);
         return this.listViTri.children[rdNode];
     }
-    public setViTriForObj():cc.Node[]{
+    public setViTriForObj():cc.Vec2[]{
         let listViTri = this.randomViTri().children;
         let listResult = [];
         for(let i=0; i<listViTri.length; i++){
@@ -28,7 +28,9 @@ export default class ListViTriCaDiChuyen extends cc.Component {
             posCloneViTri = listViTri[i].convertToWorldSpaceAR(cc.Vec2.ZERO)
             cloneVitri.setParent(this.rootNode);
             cloneVitri.setPosition(this.rootNode.convertToNodeSpaceAR(posCloneViTri))
-            listResult.push(cloneVitri)
+            let vec2CloneViTri = new cc.Vec2(cloneVitri.x, cloneVitri.y);
+            listResult.push(vec2CloneViTri)
+            cloneVitri.destroy();
         }
         return listResult;
     }

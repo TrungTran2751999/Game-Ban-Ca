@@ -30,10 +30,13 @@
       },
       {
         "__id__": 5
+      },
+      {
+        "__id__": 6
       }
     ],
     "_prefab": {
-      "__id__": 6
+      "__id__": 7
     },
     "_opacity": 255,
     "_color": {
@@ -122,7 +125,7 @@
       "__id__": 1
     },
     "_enabled": true,
-    "speed": 35,
+    "speed": 100,
     "heath": 5,
     "listViTri": null,
     "soDiem": 200,
@@ -348,6 +351,16 @@
         "y": -31.3
       }
     ],
+    "_id": ""
+  },
+  {
+    "__type__": "7f7327M1opLK5ZfN1haZiVA",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
     "_id": ""
   },
   {
