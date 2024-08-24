@@ -13,6 +13,8 @@ const {ccclass, property} = cc._decorator;
 export default class Bullet1 extends cc.Component {
     @property
     public speed:number = 200
+    @property
+    public soXuTieuHao:number = 10;
 
     public xFrame:number = cc.view.getCanvasSize().width
     public yFrame:number = cc.view.getCanvasSize().height

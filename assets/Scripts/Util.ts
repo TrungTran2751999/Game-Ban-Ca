@@ -99,7 +99,7 @@ export default class Util extends cc.Component{
                 //lay vi tri cua label so xu
                 let thongTinNguoiChoi:ThongTinNguoiChoi = nguoiChoi.getComponent("ThongTinNguoiChoi")
                 let labelSoXu = thongTinNguoiChoi.SoXuBac
-                xuBacClass.targetNode = labelSoXu
+                xuBacClass.labelXuBacNguoiBan = labelSoXu
                 xuBacClass.animateTarget(soDiem)
             }
             Util.hieuUngChetXoayVong(ca, 1)

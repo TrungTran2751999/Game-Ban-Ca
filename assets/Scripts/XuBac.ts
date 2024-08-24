@@ -13,7 +13,7 @@ const {ccclass, property} = cc._decorator;
 @ccclass
 export default class XuBac extends cc.Component {   
     @property(cc.Node)
-    public targetNode:cc.Label;
+    public labelXuBacNguoiBan:cc.Label;
 
     protected onLoad(): void {
         const anim = this.node.getComponent(cc.Animation)
@@ -23,7 +23,7 @@ export default class XuBac extends cc.Component {
     }
     animateTarget(soDiem:number){
         let containerCanvas = cc.find("Canvas")
-        let viTriWorldTargetNode = Util.quyDoiGocTaoDoCha(this.targetNode.node, containerCanvas)
+        let viTriWorldTargetNode = Util.quyDoiGocTaoDoCha(this.labelXuBacNguoiBan.node, containerCanvas)
         let x = viTriWorldTargetNode.x;
         let y = viTriWorldTargetNode.y;
         let action = cc.sequence(
@@ -36,8 +36,8 @@ export default class XuBac extends cc.Component {
         this.node.runAction(action);
         this.scheduleOnce(()=>{
             this.node.destroy()
-            let soXuBac = +this.targetNode.string
-            this.targetNode.string = `${soXuBac+=soDiem}`
+            let soXuBac = +this.labelXuBacNguoiBan.string
+            this.labelXuBacNguoiBan.string = `${soXuBac+=soDiem}`
         },1.5)
     }
 }

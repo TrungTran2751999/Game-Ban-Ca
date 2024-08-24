@@ -12,6 +12,7 @@ import GlobalVariable from "./GlobalVariable";
 import Gun1 from "./Gun1";
 import ListViTriCaDiChuyen from "./ListViTriCaDiChuyen";
 import ListViTriKhoiTao from "./ListViTriKhoiTao";
+import CaInfo from "./model/CaInfo";
 import Sua from "./Sua";
 import ThongTinNguoiChoi from "./ThongTinNguoiChoi";
 import XuBac from "./XuBac";
@@ -36,6 +37,8 @@ export default class GameCtrl extends cc.Component {
     @property(cc.Prefab)
     public xuBac:cc.Node
 
+    public listInfoCa:CaInfo[] = []
+
     private static instance:GameCtrl
     private constructor() {
         super();
@@ -46,20 +49,33 @@ export default class GameCtrl extends cc.Component {
         }
         return this.instance
     }
-    
+    protected start(): void {
+       
+    }
     protected onLoad(): void {
         let managerCollision = cc.director.getCollisionManager();
         managerCollision.enabled = true;
+
+        let caVangBu = new CaInfo().getCaInfo(this.caVangBu, "CaVangBu")
+        this.listInfoCa.push(caVangBu)
+        let sua = new CaInfo().getCaInfo(this.sua, "Sua")
+        this.listInfoCa.push(sua)
         this.initListener()
-        //init ca vang bu
-        GameCtrl.getInstance().initCa(this.caVangBu, "CaVangBu", this.listViTri, this.listViTriKhoiTao, this.initXuBac(), this.fishes)
-        //init Sua
-        GameCtrl.getInstance().initCa(this.sua, "Sua", this.listViTri, this.listViTriKhoiTao,  this.initXuBac(), this.fishes)
+        
+        this.schedule(()=>{
+            let caInstance = GameCtrl.randomCa(this.listInfoCa) 
+            this.initCa(caInstance.ca, caInstance.scriptCa, this.listViTri, this.listViTriKhoiTao, this.initXuBac(), this.fishes)
+        },0.5,10)
     }
     initListener(){
         this.gun1.initListener()
     }
-    
+    protected update(dt: number): void {
+        let caInstance = GameCtrl.randomCa(this.listInfoCa) 
+        if(GlobalVariable.isCaChet){
+            this.initCa(caInstance.ca, caInstance.scriptCa, this.listViTri, this.listViTriKhoiTao, this.initXuBac(), this.fishes)
+        }
+    }
     initXuBac():cc.Node{
         let insXuBac = cc.instantiate(this.xuBac)
         return insXuBac
@@ -93,6 +109,7 @@ export default class GameCtrl extends cc.Component {
         insCaClass.xuBac = xuBac
         insCa.setPosition(viTriNodeKhoiTao)
         fishes.addChild(insCa)
+        GlobalVariable.isCaChet=false
     }
     public static caDiChuyen(ca:cc.Node, viTris:cc.Vec2[], isInit:boolean, speed:number){
         let listFiteTimeAct = [];
@@ -143,7 +160,7 @@ export default class GameCtrl extends cc.Component {
                 //lay vi tri cua label so xu
                 let thongTinNguoiChoi:ThongTinNguoiChoi = nguoiChoi.getComponent("ThongTinNguoiChoi")
                 let labelSoXu = thongTinNguoiChoi.SoXuBac
-                xuBacClass.targetNode = labelSoXu
+                xuBacClass.labelXuBacNguoiBan = labelSoXu
                 xuBacClass.animateTarget(soDiem)
             }
             GameCtrl.hieuUngChetXoayVong(ca, 1)
@@ -156,6 +173,7 @@ export default class GameCtrl extends cc.Component {
                         listViTri[i].destroy()
                     }
                 }
+                GlobalVariable.isCaChet = true
             },1)
         }
     }
@@ -185,12 +203,18 @@ export default class GameCtrl extends cc.Component {
         }, timeStart)
     }
     public static getTenNguoiBan(bulletOther:Bullet):cc.Node{
-        let tenNguoiBan = bulletOther.node.name.split("|")[1]
-        let nguoiBan:cc.Node;
-        //lay node nguoi ban
-        if(tenNguoiBan!=undefined){
-            nguoiBan = cc.find(`${GlobalVariable.rootNguoiBan}/${tenNguoiBan}`)
+        if(bulletOther){
+            let tenNguoiBan = bulletOther.node.name.split("|")[1]
+            let nguoiBan:cc.Node;
+            //lay node nguoi ban
+            if(tenNguoiBan!=undefined){
+                nguoiBan = cc.find(`${GlobalVariable.rootNguoiBan}/${tenNguoiBan}`)
+            }
+            return nguoiBan;
         }
-        return nguoiBan;
+    }
+    public static randomCa(listCaInfo:CaInfo[]):CaInfo{
+        let rdCa = Math.floor(Math.random()*listCaInfo.length);
+        return listCaInfo[rdCa]
     }
 }

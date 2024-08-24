@@ -7,4 +7,5 @@
 
 export default class GlobalVariable{
     public static rootNguoiBan = "Canvas"
+    public static isCaChet = false
 }
