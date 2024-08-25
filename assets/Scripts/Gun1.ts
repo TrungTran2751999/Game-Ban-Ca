@@ -26,7 +26,20 @@ export default class Gun1 extends cc.Component {
 
     @property(cc.Label)
     public labelXuBac:cc.Label
+    
+    @property(cc.Node)
+    public btnNangCapSung:cc.Node
 
+    @property(cc.Node)
+    public btnGiamCapSung:cc.Node
+
+    @property
+    public tocDoBan:number = 10
+
+    @property(cc.Node)
+    public frameGunContainer:cc.Node
+    
+    public capHienTai:number = 0;
     private isContinousFire = false
     private count=0;
 
@@ -41,7 +54,7 @@ export default class Gun1 extends cc.Component {
     }
     fireBullet(){
         const anim = this.node.getComponent(cc.Animation)
-        anim.play("Gun1Fire")
+        anim.play(anim.defaultClip.name)
         let instanceBullet = cc.instantiate(this.bullet)
 
         instanceBullet.name = "Bullet|GunStation1"
@@ -64,9 +77,38 @@ export default class Gun1 extends cc.Component {
         cloneGocBan.setScale(new cc.Vec2(0.8,0.8))
         cloneGocBan.addChild(instanceBullet)
     }
+    nangCapSung(){
+        let anim = this.btnNangCapSung.getComponent(cc.Animation)
+        anim.play("BamNut")
+        if(this.capHienTai<this.frameGunContainer.children.length-1){
+            this.capHienTai+=1
+            this.thayDoiCapSung(this.capHienTai)
+        }
+    }
+    giamCapSung(){
+        let anim = this.btnGiamCapSung.getComponent(cc.Animation)
+        anim.play("BamNut")
+        if(this.capHienTai>0){
+            this.capHienTai-=1
+            this.thayDoiCapSung(this.capHienTai)
+        }
+    }
+    thayDoiCapSung(capBac:number){
+        let listframeGun = this.frameGunContainer.children;
+        let spriteFrame = listframeGun[capBac].getComponent(cc.Sprite).spriteFrame
+        let animation = listframeGun[capBac].getComponent(cc.Animation).defaultClip
+        
+        let currentAnimationGun = this.node.getComponent(cc.Animation)
+        this.node.getComponent(cc.Sprite).spriteFrame = spriteFrame
+
+        currentAnimationGun.removeClip(currentAnimationGun.defaultClip)
+        currentAnimationGun.addClip(animation, "Gun1Fire")
+
+        this.node.getComponent(cc.Animation).defaultClip = animation
+    }
     protected update(dt: number): void {
         if(this.isContinousFire){
-            if(this.count==30){
+            if(this.count==this.tocDoBan){
                 this.count=0
                 this.fireBullet()
             }
@@ -78,5 +120,8 @@ export default class Gun1 extends cc.Component {
         //this.gocXoay.on(cc.Node.EventType.TOUCH_START, this.fireBullet, this)
         this.gocXoay.on(cc.Node.EventType.TOUCH_START, ()=>{this.isContinousFire = true;}, this)
         this.gocXoay.on(cc.Node.EventType.TOUCH_END, ()=>{this.isContinousFire = false;}, this)
+        
+        this.btnNangCapSung.on(cc.Node.EventType.TOUCH_START, this.nangCapSung, this)
+        this.btnGiamCapSung.on(cc.Node.EventType.TOUCH_START, this.giamCapSung, this)
     }
 }

@@ -1,0 +1,58 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "Gun2Fire",
+  "_objFlags": 0,
+  "_native": "",
+  "_duration": 0.18333333333333332,
+  "sample": 60,
+  "speed": 1,
+  "wrapMode": 1,
+  "curveData": {
+    "comps": {
+      "cc.Sprite": {
+        "spriteFrame": [
+          {
+            "frame": 0,
+            "value": {
+              "__uuid__": "329ed961-8ee4-4481-be70-87cbefa39a47"
+            }
+          },
+          {
+            "frame": 0.03333333333333333,
+            "value": {
+              "__uuid__": "7bf516c5-9f11-442a-b4f8-192b893ea558"
+            }
+          },
+          {
+            "frame": 0.06666666666666667,
+            "value": {
+              "__uuid__": "6a26a87b-ca7c-4fba-a86a-a46afe6b0c62"
+            }
+          },
+          {
+            "frame": 0.1,
+            "value": {
+              "__uuid__": "80d411a4-eb87-4424-b95a-b281bcbefb1e"
+            }
+          },
+          {
+            "frame": 0.13333333333333333,
+            "value": {
+              "__uuid__": "849dbcab-4f2d-4c0a-805e-e932a9b91a82"
+            }
+          },
+          {
+            "frame": 0.16666666666666666,
+            "value": {
+              "__uuid__": "329ed961-8ee4-4481-be70-87cbefa39a47"
+            }
+          }
+        ]
+      }
+    },
+    "props": {
+      "x": []
+    }
+  },
+  "events": []
+}
