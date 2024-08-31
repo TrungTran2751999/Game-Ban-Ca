@@ -5,7 +5,10 @@
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
+import Bullet from "./Bullet";
 import Bullet1 from "./Bullet1";
+import GameCtrl from "./GameCtrl";
+import GlobalVariable from "./GlobalVariable";
 import ThongTinNguoiChoi from "./ThongTinNguoiChoi";
 
 const {ccclass, property} = cc._decorator;
@@ -39,10 +42,20 @@ export default class Gun1 extends cc.Component {
     @property(cc.Node)
     public frameGunContainer:cc.Node
     
+    public bulletCopy:cc.Node
     public capHienTai:number = 0;
     private isContinousFire = false
+    public thongTinNguoiChoi:ThongTinNguoiChoi
+    public soXuBac:number
     private count=0;
 
+    protected start(): void {
+        console.log(GlobalVariable.soXuTichLuy)
+    }
+    protected onLoad(): void {
+        this.bulletCopy = cc.instantiate(this.bullet)
+        this.labelXuBac.string = `100`
+    }
     controlGun(event:any){
         let Gun1Pos = cc.v2(this.node.position.x, this.node.position.y);
         let mousePos = event.getLocation();
@@ -53,17 +66,28 @@ export default class Gun1 extends cc.Component {
         this.node.angle = angleD
     }
     fireBullet(){
+        console.log(GlobalVariable.soXuTichLuy)
+        let diemHienTai = +this.labelXuBac.string
+        if(GameCtrl.hetXu(diemHienTai)) return 
+
         const anim = this.node.getComponent(cc.Animation)
         anim.play(anim.defaultClip.name)
-        let instanceBullet = cc.instantiate(this.bullet)
+        let instanceBullet = cc.instantiate(this.bulletCopy)
 
         instanceBullet.name = "Bullet|GunStation1"
-        let diemHienTai = +this.labelXuBac.string
+        
         if(diemHienTai!=0){
             let bulletScript:Bullet1 = instanceBullet.getComponent("Bullet1")
-            this.labelXuBac.string = `${diemHienTai-bulletScript.soXuTieuHao}`
+            let diemTru = diemHienTai-bulletScript.soXuTieuHao
+            
+            if(diemTru<0){
+                this.labelXuBac.string = `${0}`
+            }else{
+                this.labelXuBac.string = `${diemTru}`
+            }
+            GlobalVariable.soXuTichLuy = +`${this.labelXuBac.string}`
         }
-
+        
         let gunAngle = this.node.angle
         let cloneGocBan = cc.instantiate(this.gocBan);
         
@@ -105,7 +129,27 @@ export default class Gun1 extends cc.Component {
         currentAnimationGun.addClip(animation, "Gun1Fire")
 
         this.node.getComponent(cc.Animation).defaultClip = animation
+
+        //thay doi goc ban
+        let gocBanFramePostionx = listframeGun[capBac].children[0].position.x
+        this.gocBan.setPosition(new cc.Vec2(gocBanFramePostionx, this.gocBan.position.y))
+        //thay doi bullet
+        this.bulletCopy = cc.instantiate(this.bullet)
+        let spriteFrameBulletNangCap = listframeGun[capBac].children[1].getComponent(cc.Sprite).spriteFrame
+        let colliderBulletNangCap = listframeGun[capBac].children[1].getComponent(cc.PolygonCollider)
+        let dameNangCap = listframeGun[capBac].children[1].getComponent(Bullet).damage
+        let soXuTieuHao = listframeGun[capBac].children[1].getComponent(Bullet).soXuTieuHao
+
+        this.bulletCopy.getComponent(cc.Sprite).spriteFrame = spriteFrameBulletNangCap
+
+        this.bulletCopy.removeComponent(cc.BoxCollider)
+        this.bulletCopy.addComponent(cc.PolygonCollider)
+
+        this.bulletCopy.getComponent(cc.PolygonCollider).points = colliderBulletNangCap.points
+        this.bulletCopy.getComponent(Bullet1).damage = dameNangCap
+        this.bulletCopy.getComponent(Bullet1).soXuTieuHao = soXuTieuHao
     }
+    
     protected update(dt: number): void {
         if(this.isContinousFire){
             if(this.count==this.tocDoBan){

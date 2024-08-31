@@ -126,6 +126,8 @@
     },
     "_enabled": true,
     "speed": 500,
+    "soXuTieuHao": 10,
+    "damage": 1,
     "_id": ""
   },
   {

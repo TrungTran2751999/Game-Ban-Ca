@@ -15,6 +15,8 @@ export default class Bullet1 extends cc.Component {
     public speed:number = 200
     @property
     public soXuTieuHao:number = 10;
+    @property
+    public damage:number = 1
 
     public xFrame:number = cc.view.getCanvasSize().width
     public yFrame:number = cc.view.getCanvasSize().height

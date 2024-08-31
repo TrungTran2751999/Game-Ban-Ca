@@ -43,7 +43,7 @@ export default class CaVangBu extends cc.Component {
     }
     onCollisionEnter(other:cc.Collider, self:cc.Collider){
         //ca bi dan ban trung
-        let bulletOther:Bullet = other.node.getComponent("Bullet")
+        let bulletOther:Bullet1 = other.node.getComponent("Bullet1")
         let nguoiBan = GameCtrl.getTenNguoiBan(bulletOther);
         if(other.tag==0){
             this.node.color = cc.Color.RED;

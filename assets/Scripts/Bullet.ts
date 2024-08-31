@@ -13,4 +13,6 @@ const {ccclass, property} = cc._decorator;
 export default class Bullet extends cc.Component {
     @property
     public damage:number = 1
+    @property
+    public soXuTieuHao:number = 10
 }

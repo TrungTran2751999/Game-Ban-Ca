@@ -38,8 +38,9 @@ export default class GameCtrl extends cc.Component {
     public xuBac:cc.Node
 
     public listInfoCa:CaInfo[] = []
-
+    public thongTinNguoiChoi:ThongTinNguoiChoi
     private static instance:GameCtrl
+    public static soXuTichLuy:number
     private constructor() {
         super();
     }
@@ -49,9 +50,6 @@ export default class GameCtrl extends cc.Component {
         }
         return this.instance
     }
-    protected start(): void {
-       
-    }
     protected onLoad(): void {
         let managerCollision = cc.director.getCollisionManager();
         managerCollision.enabled = true;
@@ -60,6 +58,9 @@ export default class GameCtrl extends cc.Component {
         this.listInfoCa.push(caVangBu)
         let sua = new CaInfo().getCaInfo(this.sua, "Sua")
         this.listInfoCa.push(sua)
+    
+        GameCtrl.soXuTichLuy = 12000
+
         this.initListener()
         
         this.schedule(()=>{
@@ -147,7 +148,7 @@ export default class GameCtrl extends cc.Component {
         ca.runAction(action)
     }
     public die(ca:cc.Node,heath:number,  anim:cc.Animation, xu:cc.Node, collider:cc.Collider, nguoiChoi:cc.Node, soDiem:number){
-        if(heath==0){
+        if(heath<=0){
             anim.pause()
             collider.destroy()
             let containerCanvas = cc.find("Canvas")
@@ -202,7 +203,7 @@ export default class GameCtrl extends cc.Component {
             }, toTalTime, 1000, 0)
         }, timeStart)
     }
-    public static getTenNguoiBan(bulletOther:Bullet):cc.Node{
+    public static getTenNguoiBan(bulletOther:Bullet1):cc.Node{
         if(bulletOther){
             let tenNguoiBan = bulletOther.node.name.split("|")[1]
             let nguoiBan:cc.Node;
@@ -212,6 +213,13 @@ export default class GameCtrl extends cc.Component {
             }
             return nguoiBan;
         }
+    }
+    public static hetXu(diem:number):boolean{
+        if(diem<=0){
+            GlobalVariable.isHetXu = true
+            return true
+        }
+        return false
     }
     public static randomCa(listCaInfo:CaInfo[]):CaInfo{
         let rdCa = Math.floor(Math.random()*listCaInfo.length);

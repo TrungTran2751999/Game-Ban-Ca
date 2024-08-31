@@ -8,4 +8,7 @@
 export default class GlobalVariable{
     public static rootNguoiBan = "Canvas"
     public static isCaChet = false
+    public static isHetXu = false
+    public static soXuTichLuy = 0
+    public static idNguoiChoi = "GunStation1"
 }
