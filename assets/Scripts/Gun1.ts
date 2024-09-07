@@ -9,6 +9,7 @@ import Bullet from "./Bullet";
 import Bullet1 from "./Bullet1";
 import GameCtrl from "./GameCtrl";
 import GlobalVariable from "./GlobalVariable";
+import Socket from "./Socket";
 import ThongTinNguoiChoi from "./ThongTinNguoiChoi";
 
 const {ccclass, property} = cc._decorator;
@@ -22,13 +23,16 @@ export default class Gun1 extends cc.Component {
     public bullet:cc.Prefab
 
     @property(cc.Node)
-    public gocBan:cc.Node
+    public gocBan:cc.Node //lay tu GameCtrl
 
     @property(cc.Node)
-    public bulletContainer:cc.Node
+    public bulletContainer:cc.Node //lay tu GameCtrl
 
     @property(cc.Label)
     public labelXuBac:cc.Label
+
+    @property(cc.Label)
+    public tenNguoiChoi:cc.Label
     
     @property(cc.Node)
     public btnNangCapSung:cc.Node
@@ -40,8 +44,9 @@ export default class Gun1 extends cc.Component {
     public tocDoBan:number = 10
 
     @property(cc.Node)
-    public frameGunContainer:cc.Node
-    
+    public frameGunContainer:cc.Node //lay tu GameCtrl
+
+    public isTop:boolean = false
     public bulletCopy:cc.Node
     public capHienTai:number = 0;
     private isContinousFire = false
@@ -49,12 +54,16 @@ export default class Gun1 extends cc.Component {
     public soXuBac:number
     private count=0;
 
-    protected start(): void {
-        console.log(GlobalVariable.soXuTichLuy)
-    }
     protected onLoad(): void {
         this.bulletCopy = cc.instantiate(this.bullet)
         this.labelXuBac.string = `100`
+        this.tenNguoiChoi.string = GlobalVariable.idNguoiChoi
+        this.node.parent.name = GlobalVariable.idNguoiChoi
+
+        Socket.sendData("zo ne");
+        Socket.getInstance().initSocket.addEventListener("message",(data)=>{
+            console.log(data)
+        })
     }
     controlGun(event:any){
         let Gun1Pos = cc.v2(this.node.position.x, this.node.position.y);
@@ -62,11 +71,15 @@ export default class Gun1 extends cc.Component {
         mousePos = this.gocXoay.convertToNodeSpaceAR(mousePos);
         let angle = mousePos.signAngle(Gun1Pos);
         let angleD = cc.misc.radiansToDegrees(angle);
-        angleD = (angleD*-1)-180
+        if(this.isTop==true){
+            angleD = (angleD*-1)
+        }else{
+            angleD = (angleD*-1)+180
+        }
+        
         this.node.angle = angleD
     }
     fireBullet(){
-        console.log(GlobalVariable.soXuTichLuy)
         let diemHienTai = +this.labelXuBac.string
         if(GameCtrl.hetXu(diemHienTai)) return 
 
@@ -74,10 +87,11 @@ export default class Gun1 extends cc.Component {
         anim.play(anim.defaultClip.name)
         let instanceBullet = cc.instantiate(this.bulletCopy)
 
-        instanceBullet.name = "Bullet|GunStation1"
+        instanceBullet.name = `Bullet|${GlobalVariable.idNguoiChoi}`
         
         if(diemHienTai!=0){
             let bulletScript:Bullet1 = instanceBullet.getComponent("Bullet1")
+            bulletScript.isTop = this.isTop
             let diemTru = diemHienTai-bulletScript.soXuTieuHao
             
             if(diemTru<0){

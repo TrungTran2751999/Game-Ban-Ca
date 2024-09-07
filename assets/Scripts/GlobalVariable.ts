@@ -10,5 +10,5 @@ export default class GlobalVariable{
     public static isCaChet = false
     public static isHetXu = false
     public static soXuTichLuy = 0
-    public static idNguoiChoi = "GunStation1"
+    public static idNguoiChoi = "Unnamed"
 }

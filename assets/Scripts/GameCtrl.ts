@@ -36,6 +36,38 @@ export default class GameCtrl extends cc.Component {
     public sua:cc.Node
     @property(cc.Prefab)
     public xuBac:cc.Node
+    @property(cc.Node)
+    public bulletContainer:cc.Node
+    @property(cc.Node)
+    public frameGunContainer:cc.Node
+    @property(cc.Node)
+    public viTri1:cc.Node
+    @property(cc.Node)
+    public viTri2:cc.Node
+    @property(cc.Node)
+    public viTri3:cc.Node
+    @property(cc.Node)
+    public viTri4:cc.Node
+    @property(cc.Node)
+    public gocXoay1:cc.Node
+    @property(cc.Node)
+    public gocXoay2:cc.Node
+    @property(cc.Node)
+    public gocXoay3:cc.Node
+    @property(cc.Node)
+    public gocXoay4:cc.Node
+    @property(cc.Node)
+    public gunStation1:cc.Node
+    @property(cc.Node)
+    public guncStation2:cc.Node
+    @property(cc.Node)
+    public gunStation3:cc.Node
+    @property(cc.Node)
+    public guncStation4:cc.Node
+    @property(cc.Node)
+    public containerPlayer:cc.Node
+    @property(cc.Prefab)
+    public player:cc.Node
 
     public listInfoCa:CaInfo[] = []
     public thongTinNguoiChoi:ThongTinNguoiChoi
@@ -54,6 +86,8 @@ export default class GameCtrl extends cc.Component {
         let managerCollision = cc.director.getCollisionManager();
         managerCollision.enabled = true;
 
+        this.initGunStation()
+
         let caVangBu = new CaInfo().getCaInfo(this.caVangBu, "CaVangBu")
         this.listInfoCa.push(caVangBu)
         let sua = new CaInfo().getCaInfo(this.sua, "Sua")
@@ -71,9 +105,38 @@ export default class GameCtrl extends cc.Component {
     initListener(){
         this.gun1.initListener()
     }
+    initGunStation(){
+        if(this.gunStation1==null){
+            this.createGunStation(this.gocXoay1, this.viTri1)
+        }else if(this.guncStation2==null){
+            this.createGunStation(this.gocXoay2, this.viTri2)
+        }else if(this.gunStation3==null){
+            this.createGunStation(this.gocXoay3, this.viTri3)
+        }else if(this.guncStation4==null){
+            this.createGunStation(this.gocXoay4, this.viTri4)
+        }
+    }
+    createGunStation(gocXoay:cc.Node, viTri:cc.Node){
+        let playerInstance = cc.instantiate(this.player)
+        let gun1:Gun1 = playerInstance.children[2].getComponent("Gun1")
+        if(gun1!=null){
+            gun1.gocXoay = gocXoay
+            gun1.bulletContainer = this.bulletContainer
+            gun1.frameGunContainer = this.frameGunContainer
+            gun1.initListener()
+        }
+        if(gocXoay==this.gocXoay3 || gocXoay==this.gocXoay4){
+            playerInstance.rotation = 90
+            if(gun1!=null){
+                gun1.isTop = true
+            }
+        }
+        playerInstance.setPosition(new cc.Vec2(viTri.position.x, viTri.position.y))
+        this.containerPlayer.addChild(playerInstance)
+    }
     protected update(dt: number): void {
-        let caInstance = GameCtrl.randomCa(this.listInfoCa) 
         if(GlobalVariable.isCaChet){
+            let caInstance = GameCtrl.randomCa(this.listInfoCa) 
             this.initCa(caInstance.ca, caInstance.scriptCa, this.listViTri, this.listViTriKhoiTao, this.initXuBac(), this.fishes)
         }
     }

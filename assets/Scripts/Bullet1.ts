@@ -18,10 +18,17 @@ export default class Bullet1 extends cc.Component {
     @property
     public damage:number = 1
 
+    public isTop:boolean = false
     public xFrame:number = cc.view.getCanvasSize().width
     public yFrame:number = cc.view.getCanvasSize().height
     protected update(dt: number): void {
-        this.node.y+=this.speed*dt
+        if(this.isTop==true){
+            this.node.y-=this.speed*dt
+            this.node.rotation = 90
+        }else{
+            this.node.y+=this.speed*dt
+        }
+        
         this.node.setPosition(new cc.Vec2(this.node.x, this.node.y))
         if(this.node.position.y > Math.abs(this.yFrame)*1.5 || this.node.x > Math.abs(this.xFrame)*1.5){
             this.node.parent.destroy()
