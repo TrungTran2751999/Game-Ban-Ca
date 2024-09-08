@@ -57,14 +57,6 @@ export default class GameCtrl extends cc.Component {
     @property(cc.Node)
     public gocXoay4:cc.Node
     @property(cc.Node)
-    public gunStation1:cc.Node
-    @property(cc.Node)
-    public guncStation2:cc.Node
-    @property(cc.Node)
-    public gunStation3:cc.Node
-    @property(cc.Node)
-    public guncStation4:cc.Node
-    @property(cc.Node)
     public containerPlayer:cc.Node
     @property(cc.Prefab)
     public player:cc.Node
@@ -106,15 +98,7 @@ export default class GameCtrl extends cc.Component {
         this.gun1.initListener()
     }
     initGunStation(){
-        if(this.gunStation1==null){
-            this.createGunStation(this.gocXoay1, this.viTri1)
-        }else if(this.guncStation2==null){
-            this.createGunStation(this.gocXoay2, this.viTri2)
-        }else if(this.gunStation3==null){
-            this.createGunStation(this.gocXoay3, this.viTri3)
-        }else if(this.guncStation4==null){
-            this.createGunStation(this.gocXoay4, this.viTri4)
-        }
+        this.createGunStation(this.gocXoay3, this.viTri3)
     }
     createGunStation(gocXoay:cc.Node, viTri:cc.Node){
         let playerInstance = cc.instantiate(this.player)
