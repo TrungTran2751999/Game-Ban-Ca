@@ -22,10 +22,15 @@ export default class Socket extends cc.Component {
         }
         return Socket.instance;
     }
-    public static sendData(data:string){
+    public static init(data:string){
         let socket = Socket.getInstance()
         socket.initSocket.addEventListener("open", ()=>{
             socket.initSocket.send(data)
         })
+    }
+    public static sendData(data:string){
+        let socket = Socket.getInstance()
+        socket.initSocket.send(data)
+
     }
 }

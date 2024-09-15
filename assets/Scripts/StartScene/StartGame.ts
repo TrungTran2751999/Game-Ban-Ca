@@ -32,11 +32,20 @@ export default class StartGame extends cc.Component {
             return res.json()
         })
         .then(data=>{
-            console.log(data)
-            cc.director.loadScene("MainScene")
+            let listPlayer = data.listPlayer
+            for(let i=0; i<listPlayer.length; i++){
+                GlobalVariable.listPlayer.push(listPlayer[i])
+                if(listPlayer[i].namePlayer==player.NamePlayer){
+                    GlobalVariable.viTri = listPlayer[i].viTri
+                    cc.director.loadScene("MainScene")
+                    break;
+                }
+            }
             GlobalVariable.idNguoiChoi = this.tenPlayerEdt.string
+            GlobalVariable.idPhong = data.idPhong
         })
         .catch(err=>{
+            alert("SERVER 500")
             console.log(err)
         })
     }

@@ -13,6 +13,8 @@ import Gun1 from "./Gun1";
 import ListViTriCaDiChuyen from "./ListViTriCaDiChuyen";
 import ListViTriKhoiTao from "./ListViTriKhoiTao";
 import CaInfo from "./model/CaInfo";
+import Player from "./model/Player";
+import Socket from "./Socket";
 import Sua from "./Sua";
 import ThongTinNguoiChoi from "./ThongTinNguoiChoi";
 import XuBac from "./XuBac";
@@ -61,10 +63,13 @@ export default class GameCtrl extends cc.Component {
     @property(cc.Prefab)
     public player:cc.Node
 
+    public listViTriPlayer:cc.Node[]
+    public listGocXoayPlayer:cc.Node[]
     public listInfoCa:CaInfo[] = []
     public thongTinNguoiChoi:ThongTinNguoiChoi
     private static instance:GameCtrl
     public static soXuTichLuy:number
+    public static player:Player = new Player()
     private constructor() {
         super();
     }
@@ -78,8 +83,14 @@ export default class GameCtrl extends cc.Component {
         let managerCollision = cc.director.getCollisionManager();
         managerCollision.enabled = true;
 
+        this.listViTriPlayer = [this.viTri1, this.viTri2, this.viTri3, this.viTri4]
+        this.listGocXoayPlayer = [this.gocXoay1, this.gocXoay2, this.gocXoay3, this.gocXoay4]
+        GameCtrl.player.Id = GlobalVariable.idNguoiChoi
+        GameCtrl.player.IdPhong = GlobalVariable.idPhong
+        GameCtrl.player.Status = 0
+        GameCtrl.player.ViTri = GlobalVariable.viTri
         this.initGunStation()
-
+        
         let caVangBu = new CaInfo().getCaInfo(this.caVangBu, "CaVangBu")
         this.listInfoCa.push(caVangBu)
         let sua = new CaInfo().getCaInfo(this.sua, "Sua")
@@ -93,21 +104,70 @@ export default class GameCtrl extends cc.Component {
             let caInstance = GameCtrl.randomCa(this.listInfoCa) 
             this.initCa(caInstance.ca, caInstance.scriptCa, this.listViTri, this.listViTriKhoiTao, this.initXuBac(), this.fishes)
         },0.5,10)
+        this.receidata()
     }
     initListener(){
         this.gun1.initListener()
     }
     initGunStation(){
-        this.createGunStation(this.gocXoay3, this.viTri3)
+        let players = GlobalVariable.listPlayer;
+        for(let i=0; i<players.length; i++){
+            this.createGunStation(this.listGocXoayPlayer[i], this.listViTriPlayer[i], players[i].namePlayer)   
+        }
     }
-    createGunStation(gocXoay:cc.Node, viTri:cc.Node){
+    receidata(){
+        Socket.getInstance().initSocket.addEventListener("message",(data)=>{
+            let player = JSON.parse(data.data)
+            let playerComp = cc.find(`${GlobalVariable.rootNguoiBan}/${player.Id}`)
+            //khoi tao 1 player neu player tham chien
+            if(player.Status==0 && playerComp==null){
+                let viTriGocXoay = this.listGocXoayPlayer[player.ViTri]
+                let viTri = this.listViTriPlayer[player.ViTri]
+                this.createAnotherGun(viTriGocXoay, viTri, player.Id)
+            }
+            //hoat dong cua player
+            if(playerComp!=null){
+                let gun1Component = playerComp.getChildByName("Gun")
+                gun1Component.angle = player.GocXoay
+            }
+            
+        })
+    }
+    createGunStation(gocXoay:cc.Node, viTri:cc.Node, namePlayer:string){
         let playerInstance = cc.instantiate(this.player)
         let gun1:Gun1 = playerInstance.children[2].getComponent("Gun1")
+        let infoPlayer:ThongTinNguoiChoi = playerInstance.getComponent("ThongTinNguoiChoi");
+        if(infoPlayer!=null){
+            infoPlayer.ThongTinNguoiChoi.string = namePlayer
+            playerInstance.name = namePlayer
+        }
         if(gun1!=null){
             gun1.gocXoay = gocXoay
             gun1.bulletContainer = this.bulletContainer
             gun1.frameGunContainer = this.frameGunContainer
             gun1.initListener()
+        }
+        if(gocXoay==this.gocXoay3 || gocXoay==this.gocXoay4){
+            playerInstance.rotation = 90
+            if(gun1!=null){
+                gun1.isTop = true
+            }
+        }
+        playerInstance.setPosition(new cc.Vec2(viTri.position.x, viTri.position.y))
+        this.containerPlayer.addChild(playerInstance)
+    }
+    createAnotherGun(gocXoay:cc.Node, viTri:cc.Node, namePlayer:string){
+        let playerInstance = cc.instantiate(this.player)
+        let gun1:Gun1 = playerInstance.children[2].getComponent("Gun1")
+        let infoPlayer:ThongTinNguoiChoi = playerInstance.getComponent("ThongTinNguoiChoi");
+        if(infoPlayer!=null){
+            infoPlayer.ThongTinNguoiChoi.string = namePlayer
+            playerInstance.name = namePlayer
+        }
+        if(gun1!=null){
+            gun1.gocXoay = gocXoay
+            gun1.bulletContainer = this.bulletContainer
+            gun1.frameGunContainer = this.frameGunContainer
         }
         if(gocXoay==this.gocXoay3 || gocXoay==this.gocXoay4){
             playerInstance.rotation = 90

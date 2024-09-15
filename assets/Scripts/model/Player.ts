@@ -11,11 +11,13 @@ import BulletApi from "./Bullet"
 
 export default class Player  {
     public Id:string
+    public IdPhong:string
     public NamePlayer:string
     public ViTri:number
     public Bullet:BulletApi
     public GocXoay:number
     public SoDiem:number
+    public Status:number
     
     constructor() {
         this.Id = "";

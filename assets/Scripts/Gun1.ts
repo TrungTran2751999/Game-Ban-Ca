@@ -9,6 +9,7 @@ import Bullet from "./Bullet";
 import Bullet1 from "./Bullet1";
 import GameCtrl from "./GameCtrl";
 import GlobalVariable from "./GlobalVariable";
+import Player from "./model/Player";
 import Socket from "./Socket";
 import ThongTinNguoiChoi from "./ThongTinNguoiChoi";
 
@@ -57,13 +58,10 @@ export default class Gun1 extends cc.Component {
     protected onLoad(): void {
         this.bulletCopy = cc.instantiate(this.bullet)
         this.labelXuBac.string = `100`
-        this.tenNguoiChoi.string = GlobalVariable.idNguoiChoi
-        this.node.parent.name = GlobalVariable.idNguoiChoi
-
-        Socket.sendData("zo ne");
-        Socket.getInstance().initSocket.addEventListener("message",(data)=>{
-            console.log(data)
-        })
+        // this.tenNguoiChoi.string = GlobalVariable.idNguoiChoi
+        // this.node.parent.name = GlobalVariable.idNguoiChoi
+        var stringPlayer = JSON.stringify(GameCtrl.player);
+        Socket.init(stringPlayer);
     }
     controlGun(event:any){
         let Gun1Pos = cc.v2(this.node.position.x, this.node.position.y);
@@ -76,8 +74,14 @@ export default class Gun1 extends cc.Component {
         }else{
             angleD = (angleD*-1)+180
         }
-        
         this.node.angle = angleD
+
+        let player = new Player()
+        player.GocXoay = angleD
+        player.Id = GlobalVariable.idNguoiChoi
+        player.IdPhong = GlobalVariable.idPhong
+        player.Status = 2
+        Socket.sendData(JSON.stringify(player))
     }
     fireBullet(){
         let diemHienTai = +this.labelXuBac.string
