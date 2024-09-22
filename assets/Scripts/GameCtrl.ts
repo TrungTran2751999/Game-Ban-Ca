@@ -117,7 +117,7 @@ export default class GameCtrl extends cc.Component {
     }
     receidata(){
         Socket.getInstance().initSocket.addEventListener("message",(data)=>{
-            let player = JSON.parse(data.data)
+            let player:Player = JSON.parse(data.data)
             let playerComp = cc.find(`${GlobalVariable.rootNguoiBan}/${player.Id}`)
             //khoi tao 1 player neu player tham chien
             if(player.Status==0 && playerComp==null){
@@ -127,8 +127,12 @@ export default class GameCtrl extends cc.Component {
             }
             //hoat dong cua player
             if(playerComp!=null){
-                let gun1Component = playerComp.getChildByName("Gun")
-                gun1Component.angle = player.GocXoay
+                let gunComponent = playerComp.getChildByName("Gun")
+                gunComponent.angle = player.GocXoay
+                let gun1Component:Gun1 = gunComponent.getComponent("Gun1")
+                if(gun1Component!=null){
+                    gun1Component.thayDoiCapSung(player.CapBac)
+                }
             }
             
         })

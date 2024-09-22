@@ -14,6 +14,7 @@ export default class Player  {
     public IdPhong:string
     public NamePlayer:string
     public ViTri:number
+    public CapBac:number
     public Bullet:BulletApi
     public GocXoay:number
     public SoDiem:number
@@ -26,5 +27,6 @@ export default class Player  {
         this.Bullet = null;
         this.GocXoay = 0;
         this.SoDiem = 0;
+        this.CapBac = 0;
     }
 }

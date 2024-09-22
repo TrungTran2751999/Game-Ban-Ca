@@ -54,6 +54,7 @@ export default class Gun1 extends cc.Component {
     public thongTinNguoiChoi:ThongTinNguoiChoi
     public soXuBac:number
     private count=0;
+    private player = GameCtrl.player
 
     protected onLoad(): void {
         this.bulletCopy = cc.instantiate(this.bullet)
@@ -76,12 +77,12 @@ export default class Gun1 extends cc.Component {
         }
         this.node.angle = angleD
 
-        let player = new Player()
-        player.GocXoay = angleD
-        player.Id = GlobalVariable.idNguoiChoi
-        player.IdPhong = GlobalVariable.idPhong
-        player.Status = 2
-        Socket.sendData(JSON.stringify(player))
+        this.player = GameCtrl.player
+        this.player.GocXoay = angleD
+        this.player.Id = GlobalVariable.idNguoiChoi
+        this.player.IdPhong = GlobalVariable.idPhong
+        this.player.Status = 2
+        Socket.sendData(JSON.stringify(this.player))
     }
     fireBullet(){
         let diemHienTai = +this.labelXuBac.string
@@ -125,6 +126,8 @@ export default class Gun1 extends cc.Component {
         if(this.capHienTai<this.frameGunContainer.children.length-1){
             this.capHienTai+=1
             this.thayDoiCapSung(this.capHienTai)
+            this.player.CapBac = this.capHienTai
+            Socket.sendData(JSON.stringify(this.player))
         }
     }
     giamCapSung(){
@@ -133,9 +136,11 @@ export default class Gun1 extends cc.Component {
         if(this.capHienTai>0){
             this.capHienTai-=1
             this.thayDoiCapSung(this.capHienTai)
+            this.player.CapBac = this.capHienTai
+            Socket.sendData(JSON.stringify(this.player))
         }
     }
-    thayDoiCapSung(capBac:number){
+    public thayDoiCapSung(capBac:number){
         let listframeGun = this.frameGunContainer.children;
         let spriteFrame = listframeGun[capBac].getComponent(cc.Sprite).spriteFrame
         let animation = listframeGun[capBac].getComponent(cc.Animation).defaultClip
